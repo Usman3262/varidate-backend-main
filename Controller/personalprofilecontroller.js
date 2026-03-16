@@ -143,9 +143,22 @@ export const createProfile = async (req, res) => {
     console.error("Error creating profile:", error);
 
     if (error.name === 'ValidationError') {
+      // Create human-readable error messages
+      const errorMessages = [];
+      Object.keys(error.errors).forEach(key => {
+        const err = error.errors[key];
+        if (err.kind === 'required') {
+          errorMessages.push(`${key} is required`);
+        } else if (err.kind === 'enum') {
+          errorMessages.push(`Invalid value for ${key}. Allowed values: ${err.properties.enum.join(', ')}`);
+        } else {
+          errorMessages.push(err.message);
+        }
+      });
+      
       return res.status(400).json({
         success: false,
-        message: 'Validation Error',
+        message: errorMessages.join('. '),
         errors: error.errors
       });
     }
