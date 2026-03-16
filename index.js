@@ -1,11 +1,10 @@
+import './config/dotenv.js';
 import express, { json } from 'express'
-import dotenv from 'dotenv'
 import cors from 'cors'
 import { dbconnection } from './Connection/dbconnection.js';
 import userroutes from './Routes/userroutes.js';
 const app = express()
 const port = 3000
-dotenv.config();
 dbconnection();
 
 const allowedOrigins = [

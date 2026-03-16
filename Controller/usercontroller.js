@@ -3,6 +3,17 @@ import bcrypt from 'bcrypt';
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 
+// Create transporter using environment variables
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+};
+
 export const signupcontroller = async (req, res) => {
   try {
     const { firstname, lastname, email, password } = req.body;
@@ -47,16 +58,10 @@ export const signupcontroller = async (req, res) => {
     }
 
     // Send verification email
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "askmobisoft55@gmail.com",
-        pass: "bitw mduw ylst tdgh"
-      }
-    });
+    const transporter = createTransporter();
 
     const mailOptions = {
-      from: "askmobisoft55@gmail.com",
+      from: process.env.EMAIL_USER,
       to: email,
       subject: "Verify Your Email",
       html: `
@@ -132,16 +137,10 @@ export const resendVerificationCode = async (req, res) => {
     user.codeExpiresAt = codeExpiresAt;
     await user.save();
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "askmobisoft55@gmail.com",
-        pass: "bitw mduw ylst tdgh"
-      }
-    });
+    const transporter = createTransporter();
 
     const mailOptions = {
-      from: "askmobisoft55@gmail.com",
+      from: process.env.EMAIL_USER,
       to: email,
       subject: "Resend: Verify Your Email",
       html: `
@@ -219,16 +218,10 @@ export const forgotPasswordController = async (req, res) => {
     await user.save();
 
     // Send email
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "askmobisoft55@gmail.com",
-        pass: "bitw mduw ylst tdgh"
-      }
-    });
+    const transporter = createTransporter();
 
     const mailOptions = {
-      from: "askmobisoft55@gmail.com",
+      from: process.env.EMAIL_USER,
       to: email,
       subject: "Reset Your Password",
       html: `
